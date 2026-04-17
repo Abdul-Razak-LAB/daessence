@@ -1,0 +1,12 @@
+Da Essence - Your Cart Is Waiting
+
+Hi {{customerFirstName}},
+
+You left items in your cart and they are still available.
+
+Items:
+{{cartItemsText}}
+
+Continue checkout: {{resumeCheckoutUrl}}
+
+Need help? Contact us at {{supportEmail}}

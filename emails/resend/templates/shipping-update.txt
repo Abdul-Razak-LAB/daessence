@@ -1,0 +1,12 @@
+Da Essence - Shipping Update
+
+Hi {{customerFirstName}},
+
+Your order is on the way.
+
+Order Number: {{orderNumber}}
+Carrier: {{carrierName}}
+Tracking Number: {{trackingNumber}}
+Track your package: {{trackingUrl}}
+
+Need help? Contact us at {{supportEmail}}

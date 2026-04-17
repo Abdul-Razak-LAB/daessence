@@ -1,0 +1,20 @@
+Da Essence - Order Confirmed
+
+Hi {{customerFirstName}},
+
+Thank you for your purchase. Your order has been confirmed.
+
+Order Number: {{orderNumber}}
+Order Date: {{orderDate}}
+
+Items:
+{{orderItemsText}}
+
+Subtotal: {{subtotal}}
+Discount: {{discount}}
+Shipping: {{shipping}}
+Total Paid: {{totalPaid}}
+
+View your order: {{viewOrderUrl}}
+
+Need help? Contact us at {{supportEmail}}
