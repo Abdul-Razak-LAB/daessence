@@ -24,7 +24,7 @@ export function FeaturedProductSlider() {
   }, []);
 
   return (
-    <div className="featured-slider" aria-label="Featured Da Essence product slider">
+    <div className="featured-slider" role="region" aria-roledescription="carousel" aria-label="Featured Da Essence products">
       {slides.map((slide, idx) => (
         <Image
           key={slide.src}
@@ -32,18 +32,20 @@ export function FeaturedProductSlider() {
           alt={slide.alt}
           width={760}
           height={620}
-          className={`featured-product-image featured-slide ${idx === active ? "is-active" : ""}`}
+          className={`featured-slide ${idx === active ? "is-active" : ""}`}
           priority={idx === 0}
         />
       ))}
 
-      <div className="featured-slider-dots" aria-hidden="true">
+      <div className="featured-slider-dots">
         {slides.map((slide, idx) => (
           <button
             key={slide.src}
             type="button"
             className={`featured-slider-dot ${idx === active ? "is-active" : ""}`}
             onClick={() => setActive(idx)}
+            aria-label={`Slide ${idx + 1}: ${slide.alt}`}
+            aria-pressed={idx === active}
           />
         ))}
       </div>

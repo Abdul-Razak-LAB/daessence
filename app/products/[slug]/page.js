@@ -10,9 +10,31 @@ export async function generateMetadata({ params }) {
     return { title: "Product not found" };
   }
 
+  const imageUrl = product.images[0]?.path || "/assets/blacksoap.jpg";
+
   return {
     title: `${product.name} | Da Essence`,
     description: product.shortDescription,
+    openGraph: {
+      title: `${product.name} | Da Essence`,
+      description: product.shortDescription,
+      type: "product",
+      url: `https://daessence.com/products/${params.slug}`,
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: product.name,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: product.name,
+      description: product.shortDescription,
+      images: [imageUrl],
+    },
   };
 }
 
@@ -26,11 +48,20 @@ export default async function ProductPage({ params }) {
     name: product.name,
     description: product.shortDescription,
     image: product.images.map((i) => i.path),
+    sku: product.sku || product.id,
+    brand: {
+      "@type": "Brand",
+      name: "Da Essence",
+    },
     offers: {
       "@type": "Offer",
+      url: `https://daessence.com/products/${params.slug}`,
       priceCurrency: product.price.currency,
       price: ((product.price.saleAmountCents || product.price.amountCents) / 100).toFixed(2),
-      availability: product.inventory.status === "out_of_stock" ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+      availability:
+        product.inventory.status === "out_of_stock"
+          ? "https://schema.org/OutOfStock"
+          : "https://schema.org/InStock",
     },
   };
 
@@ -39,7 +70,13 @@ export default async function ProductPage({ params }) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       <div className="product-layout">
         <section>
-          <Image className="gallery-main" src={product.images[0]?.path || "/assets/blacksoap.jpg"} alt={product.images[0]?.alt || product.name} width={900} height={900} />
+          <Image
+            className="gallery-main"
+            src={product.images[0]?.path || "/assets/blacksoap.jpg"}
+            alt={product.images[0]?.alt || product.name}
+            width={900}
+            height={900}
+          />
           <div className="gallery-grid">
             {product.images.slice(1, 5).map((img) => (
               <Image key={img.path} src={img.path} alt={img.alt || product.name} width={240} height={240} />
