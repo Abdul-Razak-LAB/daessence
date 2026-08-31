@@ -27,12 +27,12 @@ export default async function ProductsPage() {
           </div>
 
           <div className="hero-banner-visual">
-            <div className="hero-banner-image-wrap">
+            <div className="hero-banner-image-wrap product-hero-image-wrap">
               <Image
-                src="/assets/our products page banner.png"
+                src="/assets/de1.png"
                 alt="Our Products hero banner"
                 fill
-                className="hero-banner-image"
+                className="hero-banner-image product-hero-image"
                 priority
               />
             </div>

@@ -90,7 +90,7 @@ Use provided files for trust and conversion storytelling.
 - `assets/glow-now.jpg`, `assets/acne-solution-now.jpg`, `assets/remedies-to-cure-acne.jpg`: Problem-solution educational blocks
 
 ### 7.3 Trust and Brand Story
-- `assets/about-image.jpg`, `assets/ceo.jpg`, `assets/British-Commissioner.jpeg`, `assets/ghana.png`: About page and provenance/trust section
+- `assets/about-image.jpg`, `assets/ceo.jpg`, `assets/leader.png`, `assets/ghana.png`: About page and provenance/trust section
 
 ### 7.4 Distribution and Wholesale (Optional MVP section)
 - `assets/distributors-banner.jpg`, `assets/distributors-banner1.jpg`, `assets/distributor-link.jpg`: Wholesale CTA section

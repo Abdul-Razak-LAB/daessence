@@ -19,7 +19,7 @@ export default function ContactPage() {
         <div className="hero-banner-visual">
           <div className="hero-banner-image-wrap">
             <Image
-              src="/assets/contact-us-hero.png"
+              src="/assets/de1.png"
               alt="Da Essence contact hero image"
               fill
               className="hero-banner-image"

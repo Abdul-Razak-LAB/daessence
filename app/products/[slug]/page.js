@@ -18,7 +18,7 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title: `${product.name} | Da Essence`,
       description: product.shortDescription,
-      type: "product",
+      type: "website",
       url: `https://daessence.com/products/${params.slug}`,
       images: [
         {

@@ -44,10 +44,12 @@ export default function EntrepreneurshipTrainingPage() {
 
         <article className="card training-banner-card">
           <Image
-            src="/assets/distributors-banner.jpg"
+            src="/assets/entrepreneurship-training.png"
             alt="Da Essence entrepreneurship training"
             width={900}
             height={900}
+            sizes="(max-width: 900px) 100vw, 42vw"
+            unoptimized
             className="training-banner-image"
           />
         </article>

@@ -53,6 +53,7 @@ export function AddToCartButton({ productId }) {
       }
 
       setMessage("Added to cart");
+      window.dispatchEvent(new Event("da_cart_updated"));
       router.refresh();
     } catch (error) {
       setMessage(error.message);

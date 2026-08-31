@@ -95,15 +95,6 @@ export default async function HomePage() {
             refreshed, and visibly brighter without harsh chemicals.
           </p>
 
-          <div className="hero-actions">
-            <Link className="btn btn-primary" href={`/products/${appConfig.productSlug}`}>
-              Shop the hero soap
-            </Link>
-            <Link className="btn btn-secondary" href="/about">
-              Learn our story
-            </Link>
-          </div>
-
           <div className="hero-values">
             <div>
               <strong>100% natural</strong>
@@ -118,22 +109,35 @@ export default async function HomePage() {
               <span>Shipping across Ghana & Nigeria</span>
             </div>
           </div>
+
+          <div className="hero-actions">
+            <Link className="btn btn-primary" href={`/products/${appConfig.productSlug}`}>
+              Shop the hero soap
+            </Link>
+            <Link className="btn btn-secondary" href="/about">
+              Learn our story
+            </Link>
+          </div>
         </article>
       </section>
 
       <section className="section trust-strip" aria-label="Trust signals">
-        <div className="pill">
-          <strong>4.9/5 customer rating</strong>
-          <span>Real feedback from happy skin care users</span>
-        </div>
-        <div className="pill">
-          <strong>Premium natural care</strong>
-          <span>Aloe vera, shea butter, and cocoa ingredients</span>
-        </div>
-        <div className="pill">
-          <strong>Secure checkout</strong>
-          <span>Fast confirmation and order tracking</span>
-        </div>
+        <article className="card trust-card">
+          <div className="trust-pill-grid">
+            <div className="pill">
+              <strong>4.9/5 customer rating</strong>
+              <span>Real feedback from happy skin care users</span>
+            </div>
+            <div className="pill">
+              <strong>Premium natural care</strong>
+              <span>Aloe vera, shea butter, and cocoa ingredients</span>
+            </div>
+            <div className="pill">
+              <strong>Secure checkout</strong>
+              <span>Fast confirmation and order tracking</span>
+            </div>
+          </div>
+        </article>
       </section>
 
       <section className="section featured-shell">
@@ -182,9 +186,9 @@ export default async function HomePage() {
           </div>
         </article>
 
-        <article className="card benefit-card">
+        <article className="card benefit-card shea-benefit-card">
           <Image
-            src="/assets/shea-butter.jpg"
+            src="/assets/glow-now.jpg"
             alt="Shea butter for nourishing skin"
             width={640}
             height={430}
@@ -213,14 +217,7 @@ export default async function HomePage() {
         </article>
       </section>
 
-      <section className="section story-banner card">
-        <Image
-          src="/assets/about-image.jpg"
-          alt="Da Essence brand story and community support"
-          width={1300}
-          height={700}
-          className="story-banner-image"
-        />
+      <section className="section card">
         <div className="story-banner-copy">
           <h2>Why customers choose Da Essence</h2>
           <p>

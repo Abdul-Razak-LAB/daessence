@@ -1,6 +1,6 @@
 import { contactSchema } from "@/lib/validators";
 import { createContactMessage, saveEmailEvent } from "@/lib/store";
-import { sendAbandonedCart } from "@/lib/email";
+import { sendContactAutoReply, sendContactSupportNotification } from "@/lib/email";
 import { appConfig } from "@/lib/config";
 import { fail, ok, withErrorHandling } from "@/lib/http";
 
@@ -15,21 +15,54 @@ export const POST = withErrorHandling(async (request) => {
   const created = await createContactMessage(parsed.data);
 
   if (process.env.RESEND_API_KEY) {
-    const result = await sendAbandonedCart({
-      email: parsed.data.email,
-      cartId: created.id,
-      items: [{ name: "Support Request Received", quantity: 1, lineTotalCents: 0 }],
-      resumeCheckoutUrl: `${appConfig.appBaseUrl}/contact`,
-    });
+    try {
+      const autoReplyResult = await sendContactAutoReply({
+        email: parsed.data.email,
+        name: parsed.data.name,
+      });
 
-    await saveEmailEvent({
-      cartId: created.id,
-      email: parsed.data.email,
-      templateKey: "contact_auto_reply",
-      providerMessageId: result.id,
-      status: result.accepted ? "sent" : "failed",
-      metadata: result,
-    });
+      await saveEmailEvent({
+        email: parsed.data.email,
+        templateKey: "contact_auto_reply",
+        providerMessageId: autoReplyResult.id,
+        status: autoReplyResult.accepted ? "sent" : "failed",
+        metadata: autoReplyResult,
+      });
+    } catch (error) {
+      await saveEmailEvent({
+        email: parsed.data.email,
+        templateKey: "contact_auto_reply",
+        status: "failed",
+        metadata: { error: error instanceof Error ? error.message : "Unknown email send error" },
+      });
+    }
+
+    try {
+      const supportResult = await sendContactSupportNotification({
+        name: parsed.data.name,
+        email: parsed.data.email,
+        message: parsed.data.message,
+        submittedAt: created.createdAt,
+      });
+
+      await saveEmailEvent({
+        email: appConfig.contactInboxEmail,
+        templateKey: "contact_support_notification",
+        providerMessageId: supportResult.id,
+        status: supportResult.accepted ? "sent" : "failed",
+        metadata: {
+          ...supportResult,
+          fromContactEmail: parsed.data.email,
+        },
+      });
+    } catch (error) {
+      await saveEmailEvent({
+        email: appConfig.contactInboxEmail,
+        templateKey: "contact_support_notification",
+        status: "failed",
+        metadata: { error: error instanceof Error ? error.message : "Unknown support email send error" },
+      });
+    }
   }
 
   return ok(created, 201);

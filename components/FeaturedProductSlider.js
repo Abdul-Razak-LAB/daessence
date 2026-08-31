@@ -4,28 +4,30 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 
 const slides = [
-  { src: "/assets/da-essence-gold.jpg", alt: "Da Essence Gold" },
-  { src: "/assets/da-essence-plus.jpg", alt: "Da Essence Plus" },
-  { src: "/assets/da-essence-shea-butter.jpg", alt: "Da Essence Shea Butter" },
+  { src: "/assets/about12.png", alt: "Da Essence founder story" },
+  { src: "/assets/leader.png", alt: "Da Essence leadership" },
+  { src: "/assets/newCEO.png", alt: "Da Essence CEO" },
+  { src: "/assets/de1.png", alt: "Da Essence product showcase" },
   { src: "/assets/bar-soap.jpg", alt: "Da Essence Bar Soap" },
-  { src: "/assets/da-essence-standard-2.jpg", alt: "Da Essence Standard 2" },
-  { src: "/assets/shower-gel.jpg", alt: "Da Essence Shower Gel" },
 ];
+
+const MAX_SLIDES = 5;
 
 export function FeaturedProductSlider() {
   const [active, setActive] = useState(0);
+  const visibleSlides = slides.slice(0, MAX_SLIDES);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setActive((prev) => (prev + 1) % slides.length);
+      setActive((prev) => (prev + 1) % visibleSlides.length);
     }, 3200);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [visibleSlides.length]);
 
   return (
     <div className="featured-slider" role="region" aria-roledescription="carousel" aria-label="Featured Da Essence products">
-      {slides.map((slide, idx) => (
+      {visibleSlides.map((slide, idx) => (
         <Image
           key={slide.src}
           src={slide.src}
@@ -38,7 +40,7 @@ export function FeaturedProductSlider() {
       ))}
 
       <div className="featured-slider-dots">
-        {slides.map((slide, idx) => (
+        {visibleSlides.map((slide, idx) => (
           <button
             key={slide.src}
             type="button"

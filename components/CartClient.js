@@ -11,22 +11,75 @@ export function CartClient() {
   const [cart, setCart] = useState(null);
   const [couponCode, setCouponCode] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [updatingItemId, setUpdatingItemId] = useState("");
 
-  async function loadCart() {
-    const id = localStorage.getItem("da_cart_id");
-    if (!id) return;
+  function toEmptyCart(snapshot) {
+    return {
+      id: snapshot.id,
+      email: snapshot.email || null,
+      status: snapshot.status || "active",
+      items: [],
+      totals: {
+        subtotalCents: 0,
+        discountCents: 0,
+        shippingCents: 0,
+        totalCents: 0,
+      },
+    };
+  }
 
-    const res = await fetch(`/api/cart?id=${id}`);
-    if (res.ok) {
-      const data = await res.json();
-      setCart(data);
-      return;
+  async function createFreshCart() {
+    const res = await fetch("/api/cart", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: localStorage.getItem("da_cart_email") || undefined }),
+    });
+
+    if (!res.ok) {
+      throw new Error("Unable to create a new cart right now.");
     }
 
-    if (res.status === 404) {
-      localStorage.removeItem("da_cart_id");
-      setCart(null);
-      setError("Your previous cart expired. Add an item to create a new cart.");
+    const data = await res.json();
+    localStorage.setItem("da_cart_id", data.id);
+    window.dispatchEvent(new Event("da_cart_updated"));
+    return toEmptyCart(data);
+  }
+
+  async function loadCart() {
+    try {
+      setLoading(true);
+      const id = localStorage.getItem("da_cart_id");
+
+      if (!id) {
+        const fresh = await createFreshCart();
+        setCart(fresh);
+        setError("");
+        return;
+      }
+
+      const res = await fetch(`/api/cart?id=${id}`);
+      if (res.ok) {
+        const data = await res.json();
+        setCart(data);
+        setError("");
+        return;
+      }
+
+      if (res.status === 404) {
+        localStorage.removeItem("da_cart_id");
+        window.dispatchEvent(new Event("da_cart_updated"));
+        const fresh = await createFreshCart();
+        setCart(fresh);
+        setError("Your previous cart expired, so we created a new one.");
+        return;
+      }
+
+      setError("Unable to load cart right now. Please try again.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to load cart right now.");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -35,18 +88,28 @@ export function CartClient() {
   }, []);
 
   async function updateItem(itemId, quantity) {
-    const res = await fetch(`/api/cart/items/${itemId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ quantity }),
-    });
-    if (!res.ok) {
-      setError("Unable to update item.");
-      return;
-    }
+    try {
+      setUpdatingItemId(itemId);
+      setError("");
 
-    const data = await res.json();
-    setCart(data.cart);
+      const nextQuantity = Math.max(0, Math.min(20, quantity));
+      const res = await fetch(`/api/cart/items/${itemId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ quantity: nextQuantity }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        setError(data?.error?.message || "Unable to update item.");
+        return;
+      }
+
+      await loadCart();
+      window.dispatchEvent(new Event("da_cart_updated"));
+    } finally {
+      setUpdatingItemId("");
+    }
   }
 
   async function applyCoupon() {
@@ -71,8 +134,12 @@ export function CartClient() {
 
   const hasItems = useMemo(() => (cart?.items?.length || 0) > 0, [cart]);
 
+  if (loading) {
+    return <p>Loading cart...</p>;
+  }
+
   if (!cart) {
-    return <p>No cart yet. Visit product page to add items.</p>;
+    return <p>{error || "No cart yet. Visit product page to add items."}</p>;
   }
 
   return (
@@ -98,10 +165,20 @@ export function CartClient() {
                 <td>{cents(item.unitPriceCents)}</td>
                 <td>{cents(item.lineTotalCents)}</td>
                 <td style={{ display: "flex", gap: 8 }}>
-                  <button className="btn btn-secondary" onClick={() => updateItem(item.id, Math.max(0, item.quantity - 1))}>
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => updateItem(item.id, item.quantity - 1)}
+                    disabled={updatingItemId === item.id}
+                  >
                     -
                   </button>
-                  <button className="btn btn-secondary" onClick={() => updateItem(item.id, item.quantity + 1)}>
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => updateItem(item.id, item.quantity + 1)}
+                    disabled={updatingItemId === item.id || item.quantity >= 20}
+                  >
                     +
                   </button>
                 </td>

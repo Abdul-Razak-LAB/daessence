@@ -69,6 +69,7 @@ export function ProductCatalogClient({ baseProductId, displayPrice }) {
         throw new Error(data?.error?.message || "Unable to add item to cart");
       }
 
+      window.dispatchEvent(new Event("da_cart_updated"));
       router.push("/checkout");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to complete action");
