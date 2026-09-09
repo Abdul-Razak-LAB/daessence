@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { getOrderByNumber } from "@/lib/store";
 import { moneyFromCents } from "@/lib/utils";
 
@@ -6,6 +7,16 @@ export default async function OrderSuccessPage({ params }) {
   const { orderNumber } = await params;
   const order = await getOrderByNumber(orderNumber);
   if (!order) return notFound();
+
+  const whatsappMessage = [
+    "Hello Da Essence, I want to confirm my order.",
+    `Order number: ${order.orderNumber}`,
+    `Status: ${order.status}`,
+    "Items:",
+    ...order.items.map((item) => `- ${item.productName} x${item.quantity}`),
+    `Total: ${moneyFromCents(order.totals.totalCents, order.totals.currency)}`,
+  ].join("\n");
+  const whatsappHref = `https://wa.me/233599053695?text=${encodeURIComponent(whatsappMessage)}`;
 
   return (
     <div className="container section">
@@ -40,6 +51,10 @@ export default async function OrderSuccessPage({ params }) {
           <p>Discount: {moneyFromCents(order.totals.discountCents)}</p>
           <p><strong>Total Paid: {moneyFromCents(order.totals.totalCents)}</strong></p>
         </div>
+
+        <Link href={whatsappHref} className="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          Send Order Details on WhatsApp
+        </Link>
       </article>
     </div>
   );
