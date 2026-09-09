@@ -43,7 +43,16 @@ export function ContactForm() {
       </div>
       <div className="field">
         <label htmlFor="message">Message</label>
-        <textarea id="message" rows={6} value={form.message} onChange={(e) => setField("message", e.target.value)} required />
+        <textarea
+          id="message"
+          rows={6}
+          minLength={10}
+          maxLength={2000}
+          value={form.message}
+          onChange={(e) => setField("message", e.target.value)}
+          required
+        />
+        <small>Message must be at least 10 characters.</small>
       </div>
       <button className="btn btn-primary">Submit</button>
       {status ? <p style={{ marginBottom: 0 }}>{status}</p> : null}

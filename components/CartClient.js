@@ -209,9 +209,15 @@ export function CartClient() {
       </div>
 
       <div style={{ marginTop: 16 }}>
-        <Link href="/checkout" className="btn btn-primary" aria-disabled={!hasItems}>
-          Proceed to Checkout
-        </Link>
+        {hasItems ? (
+          <Link href="/checkout" className="btn btn-primary">
+            Proceed to Checkout
+          </Link>
+        ) : (
+          <button type="button" className="btn btn-primary" disabled>
+            Proceed to Checkout
+          </button>
+        )}
       </div>
     </div>
   );

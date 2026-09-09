@@ -29,7 +29,18 @@ async function ensureCart() {
     body: JSON.stringify({ email: localStorage.getItem("da_cart_email") || undefined }),
   });
 
-  const cart = await response.json();
+  const responseText = await response.text();
+  let cart;
+  try {
+    cart = JSON.parse(responseText);
+  } catch {
+    throw new Error(`Unable to create cart (HTTP ${response.status}). Please refresh and try again.`);
+  }
+
+  if (!response.ok) {
+    throw new Error(cart?.error?.message || `Unable to create cart (HTTP ${response.status}).`);
+  }
+
   if (!cart.id) {
     throw new Error("Could not create cart");
   }
@@ -65,7 +76,13 @@ export function ProductCatalogClient({ baseProductId, displayPrice }) {
       });
 
       if (!res.ok) {
-        const data = await res.json();
+        const responseText = await res.text();
+        let data;
+        try {
+          data = JSON.parse(responseText);
+        } catch {
+          throw new Error(`Unable to add item to cart (HTTP ${res.status}). Please refresh and try again.`);
+        }
         throw new Error(data?.error?.message || "Unable to add item to cart");
       }
 

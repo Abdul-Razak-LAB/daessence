@@ -106,10 +106,17 @@ export default function AboutPage() {
               unoptimized
               className="entrepreneurship-card-image"
             />
-            <p>
-              Da Essence supports aspiring entrepreneurs with practical training on product sales, customer growth, and distribution.
-              Join our program to learn how to build a skincare business around trusted Da Essence products.
-            </p>
+            <div className="entrepreneurship-copy">
+              <p>
+                Da Essence supports aspiring entrepreneurs with practical training on product sales, customer growth, and distribution.
+                Join our program to learn how to build a skincare business around trusted Da Essence products.
+              </p>
+              <ul className="about-story-list entrepreneurship-benefits">
+                <li>Learn how to grow a skincare business with confidence.</li>
+                <li>Build customer trust through authentic product storytelling.</li>
+                <li>Develop simple sales and distribution strategies that work.</li>
+              </ul>
+            </div>
           </div>
           <Link href="/about/entrepreneurship-training" className="btn btn-primary">
             View Training Program
@@ -118,6 +125,14 @@ export default function AboutPage() {
 
         <article className="card equal-height-card authenticity-card" style={{ padding: 18 }}>
           <h2 style={{ marginTop: 0 }}>Authenticity and Trust</h2>
+          <Image
+            className="authenticity-card-image"
+            src="/assets/product1page.png"
+            alt="Da Essence organic soap product presentation"
+            width={1200}
+            height={900}
+            sizes="(max-width: 1200px) 100vw, 32vw"
+          />
           <p>
             We prioritize natural ingredients, tested production standards, and transparent customer communication from order to
             delivery.

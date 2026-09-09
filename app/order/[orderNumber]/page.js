@@ -3,7 +3,8 @@ import { getOrderByNumber } from "@/lib/store";
 import { moneyFromCents } from "@/lib/utils";
 
 export default async function OrderSuccessPage({ params }) {
-  const order = await getOrderByNumber(params.orderNumber);
+  const { orderNumber } = await params;
+  const order = await getOrderByNumber(orderNumber);
   if (!order) return notFound();
 
   return (

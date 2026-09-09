@@ -17,6 +17,7 @@ export function CheckoutForm() {
     stateRegion: "",
     postalCode: "",
     countryCode: "GH",
+    paymentMethod: "mobile_money",
   });
 
   function setField(key, value) {
@@ -49,8 +50,8 @@ export function CheckoutForm() {
         },
         billingSameAsShipping: true,
         payment: {
-          provider: "placeholder",
-          paymentMethodId: "manual-ok",
+          provider: form.paymentMethod,
+          paymentMethodId: form.paymentMethod === "mobile_money" ? "mobile-money" : "visa-card",
         },
       };
 
@@ -130,6 +131,30 @@ export function CheckoutForm() {
           required
         />
       </div>
+
+      <fieldset className="field">
+        <legend>Payment method</legend>
+        <label>
+          <input
+            type="radio"
+            name="paymentMethod"
+            value="mobile_money"
+            checked={form.paymentMethod === "mobile_money"}
+            onChange={(e) => setField("paymentMethod", e.target.value)}
+          />{" "}
+          Mobile Money
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="paymentMethod"
+            value="visa_card"
+            checked={form.paymentMethod === "visa_card"}
+            onChange={(e) => setField("paymentMethod", e.target.value)}
+          />{" "}
+          Visa Card
+        </label>
+      </fieldset>
 
       <button className="btn btn-primary" disabled={loading}>
         {loading ? "Processing..." : "Place Order"}

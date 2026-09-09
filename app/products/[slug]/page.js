@@ -5,7 +5,8 @@ import { getProductBySlug } from "@/lib/store";
 import { moneyFromCents } from "@/lib/utils";
 
 export async function generateMetadata({ params }) {
-  const product = await getProductBySlug(params.slug);
+  const { slug } = await params;
+  const product = await getProductBySlug(slug);
   if (!product) {
     return { title: "Product not found" };
   }
@@ -19,7 +20,7 @@ export async function generateMetadata({ params }) {
       title: `${product.name} | Da Essence`,
       description: product.shortDescription,
       type: "website",
-      url: `https://daessence.com/products/${params.slug}`,
+      url: `https://daessence.com/products/${slug}`,
       images: [
         {
           url: imageUrl,
@@ -39,7 +40,8 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function ProductPage({ params }) {
-  const product = await getProductBySlug(params.slug);
+  const { slug } = await params;
+  const product = await getProductBySlug(slug);
   if (!product) return notFound();
 
   const schema = {
@@ -55,7 +57,7 @@ export default async function ProductPage({ params }) {
     },
     offers: {
       "@type": "Offer",
-      url: `https://daessence.com/products/${params.slug}`,
+      url: `https://daessence.com/products/${slug}`,
       priceCurrency: product.price.currency,
       price: ((product.price.saleAmountCents || product.price.amountCents) / 100).toFixed(2),
       availability:

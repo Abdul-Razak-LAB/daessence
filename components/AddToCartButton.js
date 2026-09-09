@@ -18,7 +18,17 @@ async function ensureCart(email) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email: email || undefined }),
   });
-  const cart = await response.json();
+  const responseText = await response.text();
+  let cart;
+  try {
+    cart = JSON.parse(responseText);
+  } catch {
+    throw new Error(`Unable to create cart (HTTP ${response.status}). Please refresh and try again.`);
+  }
+
+  if (!response.ok) {
+    throw new Error(cart?.error?.message || `Unable to create cart (HTTP ${response.status}).`);
+  }
 
   if (cart.id) {
     localStorage.setItem("da_cart_id", cart.id);
@@ -48,7 +58,13 @@ export function AddToCartButton({ productId }) {
       });
 
       if (!res.ok) {
-        const err = await res.json();
+        const responseText = await res.text();
+        let err;
+        try {
+          err = JSON.parse(responseText);
+        } catch {
+          throw new Error(`Unable to add item (HTTP ${res.status}). Please refresh and try again.`);
+        }
         throw new Error(err?.error?.message || "Unable to add item");
       }
 

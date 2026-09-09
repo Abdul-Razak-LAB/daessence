@@ -10,6 +10,7 @@ export const PATCH = withErrorHandling(async (request, { params }) => {
     return fail("VALIDATION_ERROR", "Invalid payload", parsed.error.issues, 400);
   }
 
-  const cart = await updateCartItem(params.id, parsed.data.quantity);
+  const { id } = await params;
+  const cart = await updateCartItem(id, parsed.data.quantity);
   return ok({ cart });
 });
